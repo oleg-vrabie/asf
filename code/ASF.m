@@ -957,12 +957,12 @@ else
 end
 % get screen
 screens = Screen('Screens'); %RETURNS A LIST OF AVAIALBLE DISPLAYS
-screenNumber = max(screens); %#ok<NASGU> %PICK THE ONE WITH THE HIGEST NUMBER
-if length(screens) > 1
-    screenNumber = screens(end);
-else
-    screenNumber = 0;
-end
+% screenNumber = max(screens); %#ok<NASGU> %PICK THE ONE WITH THE HIGEST NUMBER
+% if length(screens) > 1
+%     screenNumber = screens(end);
+% else
+%     screenNumber = 0;
+% end
 
 HideCursor;
 
@@ -1015,9 +1015,9 @@ fprintf(1, '********** OPENING ONSCREEN WINDOW AND PERFORMING SOME DIAGNOSTICS *
 fprintf(1, '*****************************************************************************\n');
 
 if Cfg.Screen.useDefaultResolution
-    [windowPtr, Cfg.Screen.rect] = Screen('OpenWindow', screenNumber, Cfg.Screen.color, Cfg.Screen.rect);%[windowPtr, Cfg.Screen.rect] = Screen('OpenWindow', screenNumber, Cfg.Screen.color, Cfg.Screen.rect);
+    [windowPtr, Cfg.Screen.rect] = Screen('OpenWindow', Cfg.Screen.screenNumber, Cfg.Screen.color, Cfg.Screen.rect);%[windowPtr, Cfg.Screen.rect] = Screen('OpenWindow', screenNumber, Cfg.Screen.color, Cfg.Screen.rect);
 else
-    [windowPtr, Cfg.Screen.rect] = Screen('OpenWindow', screenNumber, Cfg.Screen.color, Cfg.Screen.rect, Cfg.Screen.Resolution.pixelSize, Cfg.Screen.numberOfBuffers);
+    [windowPtr, Cfg.Screen.rect] = Screen('OpenWindow', Cfg.Screen.screenNumber, Cfg.Screen.color, Cfg.Screen.rect, Cfg.Screen.Resolution.pixelSize, Cfg.Screen.numberOfBuffers);
 end
 Cfg.Screen.NewResolution = Screen('Resolution', windowPtr); %ALTHOUGH THIS PARAMETER MAY HAVE BEEN SET, THIS NOW ALSO CATCHES THE SITUATION WHEN CURRENT SETTINGS ARE USED
 
