@@ -197,6 +197,9 @@ function [ExpInfo] = ASF(stimFileName, trialFileName, expName, Cfg)
 %                   interface using e.g. NI PCI 6503 card).
 %                   Digital output e.g. for EEG/MEG not yet tested.  
 %
+%%V.0561 OV
+%20230607 ADDED     Per-trial accuracy counter for feedback.
+
 %TO DOs
 %rename Cfg.hardware to Cfg.Hardware (because Hardware is a structure itself)
 %add MEG related hardware inits
@@ -495,6 +498,22 @@ Cfg.currentTrialNumber = 0;
                     fix(TrialInfo(i).Response.RT(iResponse)), TrialInfo(i).Response.key(iResponse), trial(i).correctResponse);
             end
         end
+
+
+        % SAVE CORRECT AND WRONG RESPONSES FOR ACCURACY FEEDBACK
+        fprintf(1, '%d : %d : %f\n',...
+            Cfg.feedback.count_correct, Cfg.feedback.count_wrong, ...
+            Cfg.feedback.accuracy)
+        
+        if TrialInfo(i).Response.key == trial(i).correctResponse
+            Cfg.feedback.count_correct = Cfg.feedback.count_correct + 1;
+        else
+            Cfg.feedback.count_wrong = Cfg.feedback.count_wrong + 1;
+        end
+
+        Cfg.feedback.accuracy = ...
+            Cfg.feedback.count_correct / (Cfg.feedback.count_wrong + Cfg.feedback.count_correct);
+        
         
         if Cfg.onlineFeedback
             %FEEDBACK ON OPERATOR SCREEN
@@ -637,9 +656,8 @@ function [ExpInfo, Cfg, trial, windowPtr, Stimuli] = ASFInit(Cfg, expName)
 % errorFlag = 0;
 
 fprintf(1, '*************************\n');
-fprintf(1, '*** ASF VERSION %5.3f ***\n', Cfg.ASFVersion);
+fprintf(1, '*** ASF VERSION %5.3f.1 ***\n', Cfg.ASFVersion);
 fprintf(1, '*************************\n');
-
 
 %CHECK WHETHER INPUT FILES EXIST
 fprintf(1, 'CHECKING FOR %s ... ', Cfg.stimFileName);
