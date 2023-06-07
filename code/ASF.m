@@ -505,10 +505,13 @@ Cfg.currentTrialNumber = 0;
         %    Cfg.feedback.count_correct, Cfg.feedback.count_wrong, ...
         %    Cfg.feedback.accuracy)
         
-        if TrialInfo(i).Response.key == trial(i).correctResponse
-            Cfg.feedback.count_correct = Cfg.feedback.count_correct + 1;
-        else
-            Cfg.feedback.count_wrong = Cfg.feedback.count_wrong + 1;
+        if ismember(TrialInfo(i).Response.key,...
+                    [Cfg.Probe.keyYes, Cfg.Probe.keyNo])
+            if TrialInfo(i).Response.key == trial(i).correctResponse
+                Cfg.feedback.count_correct = Cfg.feedback.count_correct + 1;
+            else
+                Cfg.feedback.count_wrong = Cfg.feedback.count_wrong + 1;
+            end
         end
 
         Cfg.feedback.accuracy = ...
