@@ -504,19 +504,19 @@ Cfg.currentTrialNumber = 0;
         %fprintf(1, '%d : %d : %f\n',...
         %    Cfg.feedback.count_correct, Cfg.feedback.count_wrong, ...
         %    Cfg.feedback.accuracy)
-        
-        if ismember(TrialInfo(i).Response.key,...
-                    [Cfg.Probe.keyYes, Cfg.Probe.keyNo])
-            if TrialInfo(i).Response.key == trial(i).correctResponse
-                Cfg.feedback.count_correct = Cfg.feedback.count_correct + 1;
-            else
-                Cfg.feedback.count_wrong = Cfg.feedback.count_wrong + 1;
+        if Cfg.feedback.state_on == 1
+            if ismember(TrialInfo(i).Response.key,...
+                        [Cfg.Probe.keyYes, Cfg.Probe.keyNo])
+                if TrialInfo(i).Response.key == trial(i).correctResponse
+                    Cfg.feedback.count_correct = Cfg.feedback.count_correct + 1;
+                else
+                    Cfg.feedback.count_wrong = Cfg.feedback.count_wrong + 1;
+                end
             end
-        end
-
-        Cfg.feedback.accuracy = ...
-            Cfg.feedback.count_correct / (Cfg.feedback.count_wrong + Cfg.feedback.count_correct);
-        
+    
+            Cfg.feedback.accuracy = ...
+                Cfg.feedback.count_correct / (Cfg.feedback.count_wrong + Cfg.feedback.count_correct);
+        end    
         
         if Cfg.onlineFeedback
             %FEEDBACK ON OPERATOR SCREEN
