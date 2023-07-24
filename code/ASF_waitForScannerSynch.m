@@ -13,6 +13,8 @@ end
 %SEE also ASFInit() to find out which digital input line has been configured for
 %the synch signal
 switch Cfg.synchToScannerPort
+    case 'REGENSBURG64'
+        WaitForScannerSynchUREG64(Cfg.Hardware.scannerUREG, Cfg.Hardware.parallelAddress, Cfg.scannerSynchTimeOutMs)
     case 'PARALLEL' %PIN X ON PARALLEL PORT
         WaitForScannerSynchParallel(Cfg.Hardware.parallel.mydio_in.LuminaPort, Cfg.scannerSynchTimeOutMs);
     case 'SERIAL' %BUTTON NUMBER 5 ON SERIAL PORT (defined for Lumina Response Box)
@@ -41,6 +43,24 @@ t1 = t0;
 while( (GetSecs - t0) < timeoutMilliSeconds/1000)
     WaitSecs(0.001);
     ASF_checkforuserabort(windowPtr, Cfg);
+end
+
+%% WaitForScannerSynchUREG64
+function WaitForScannerSynchUREG64(hDIO, address, timeoutMilliSeconds)
+% SML edited this subfunction of 20161019 to work with io64 in Regensburg
+synchSignal = 0;
+output = zeros(1, 8); %#ok<NASGU>
+t0 = GetSecs;
+t1 = t0;
+initVal = io64(hDIO, address); % Read initial value at port address SML
+
+while( (~synchSignal) &&( (t1- t0) < timeoutMilliSeconds/1000))
+    %synchSignal=checkTriggerSignal64(0, 2, hDIO);
+    
+    checkVal = io64(hDIO, address); % Read from port SML
+    synchSignal = initVal ~= checkVal; % Check for a change; change means the trigger arrived SML
+    t1 = GetSecs;
+    WaitSecs(0.001);
 end
 
 %% WaitForScannerSynchNises

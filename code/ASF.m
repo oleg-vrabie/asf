@@ -789,6 +789,14 @@ fprintf(1, 'DONE\n');
 %FOR INPUT
 if Cfg.synchToScanner
     switch Cfg.synchToScannerPort
+        case 'REGENSBURG64'
+            Cfg.Hardware.scannerUREG = io64;
+            portStatus = io64(Cfg.Hardware.scannerUREG);
+            assert(~portStatus);
+            Cfg.Hardware.parallelAddress = hex2dec('2FE8'); % This is supposedly the new address for the new stim PC
+            %[triggerNo, triggerList]=checkTriggerSignal64(2, 2, Cfg.Hardware.scannerUREG);
+            %ADD ERROR CHECKING
+
         case 'NISES'
             Cfg = InitNiInputSessionBased(Cfg);
 
@@ -817,7 +825,7 @@ if Cfg.synchToScanner
     fprintf(1, 'LOADING ASF_waitForScannerSynch into memory ...');
     CfgTmp = Cfg;
     CfgTmp.ScannerSynchShowDefaultMessage = 0;
-    CfgTmp.scannerSynchTimeOutMs = -1;%100;
+    CfgTmp.scannerSynchTimeOutMs = 100; % was -1
     ASF_waitForScannerSynch(windowPtr, CfgTmp)
     fprintf(1, ' DONE.\n');
 end
